@@ -1,10 +1,9 @@
 import { useEffect, useState } from 'react';
-import './App.css';
 import { useAuth } from './context/AuthProvider';
 import Login from './pages/login/Login';
-import axios from './api/axios';
 import ProfessorHome from './pages/home/ProfessorHome';
 import StudentHome from './pages/home/StudentHome';
+import Sidebar from './components/Sidebar';
 
 function App() {
   const { auth } = useAuth();
@@ -19,9 +18,16 @@ function App() {
     <>
       {
         role === 'student' ?
-          <StudentHome/> :
+          <>
+          <Sidebar/>
+          <StudentHome/>
+          </> :
           role == 'professor' ?
-            <ProfessorHome/>:
+            <>
+            <Sidebar/>
+            <ProfessorHome/>
+            </>
+            :
             <Login />
       }
     </>

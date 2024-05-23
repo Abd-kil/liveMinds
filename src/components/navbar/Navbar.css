@@ -1,0 +1,26 @@
+@import url('../../index.css');
+.sidebar-drawer {
+    top: 64px !important;
+    width: 250px;
+    background-color: var(--background-color) !important;
+}
+
+.sidebar-drawer-icons {
+    flex-shrink: 0;
+    box-sizing: border-box;
+    top: 64px !important;
+    width: 60px;
+    white-space: nowrap;
+    overflow: hidden;
+    background-color: var(--background-color) !important;
+}
+
+@media (max-width: 600px) {
+    .sidebar-drawer-icons {
+        width: 0;
+        display: none;
+    }
+    .sidebar-drawer {
+        width: 100%;
+    }
+}

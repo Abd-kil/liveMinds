@@ -1,5 +1,4 @@
-// src/ColorModeContext.tsx
-import React, { createContext, useMemo, useState, FC, ReactNode } from 'react';
+import { createContext, useMemo, useState, useEffect, FC, ReactNode } from 'react';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import { PaletteMode } from '@mui/material';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -18,13 +17,30 @@ interface ColorModeProviderProps {
 }
 
 export const ColorModeProvider: FC<ColorModeProviderProps> = ({ children }) => {
-    const [mode, setMode] = useState<PaletteMode>('light');
-
+    const storedMode = sessionStorage.getItem('theme') as PaletteMode | null;
+    const [mode, setMode] = useState<PaletteMode>(storedMode?storedMode:'light');
+    useEffect(() => {
+        if (storedMode && storedMode !== mode) {
+            setMode(storedMode);
+        }
+    }, [storedMode]);
+    useEffect(()=>{
+        const root = document.documentElement;
+        root.style.setProperty('--background-color', mode === 'dark' ? '#000' : '#fff');
+        root.style.setProperty('--primary-color', mode === 'dark' ? '#e0f7fa' : '#2693a6');
+        root.style.setProperty('--secondary-color', mode === 'dark' ? '#2693a6' : '#e0f7fa');
+        root.style.setProperty('--font-color', mode === 'dark' ? '#fff' : '#000');
+    },[mode]);
     const colorMode = useMemo(() => ({
         toggleColorMode: () => {
-            setMode((prevMode) => (prevMode === 'light' ? 'dark' : 'light'));
+            setMode((prevMode) => {
+                const newMode = prevMode === 'light' ? 'dark' : 'light';
+                sessionStorage.setItem('theme', newMode);
+                return newMode;
+            });
         },
     }), []);
+    
 
     const theme = useMemo(() => createTheme(getDesignTokens(mode)), [mode]);
 

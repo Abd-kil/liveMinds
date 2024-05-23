@@ -3,9 +3,21 @@ import { useAuth } from './context/AuthProvider';
 import Login from './pages/login/Login';
 import ProfessorHome from './pages/home/ProfessorHome';
 import StudentHome from './pages/home/StudentHome';
-import Sidebar from './components/Sidebar';
-
-function App() {
+import Navbar from './components/navbar/Navbar';
+import { ColorModeProvider } from './context/ThemeContext';
+import { HashRouter, Route, Routes } from 'react-router-dom';
+const Routing = (props: any) => {
+  return (
+    <HashRouter basename='/'>
+      <Navbar>
+        <Routes>
+          <Route path='/' element={props.role === 'professor' ? <ProfessorHome /> : <StudentHome />} />
+        </Routes>
+      </Navbar>
+    </HashRouter>
+  )
+}
+const App = () => {
   const { auth } = useAuth();
   const [role, setRole] = useState('');
   useEffect(() => {
@@ -15,22 +27,13 @@ function App() {
     console.log(auth.isLoggedIn && auth.user?.role + role);
   }, [auth.isLoggedIn])
   return (
-    <>
+    <ColorModeProvider>
       {
-        role === 'student' ?
-          <>
-          <Sidebar/>
-          <StudentHome/>
-          </> :
-          role == 'professor' ?
-            <>
-            <Sidebar/>
-            <ProfessorHome/>
-            </>
-            :
-            <Login />
+        role !== '' ?
+          <Routing role={role} /> :
+          <Login />
       }
-    </>
+    </ColorModeProvider>
   );
 }
 
